@@ -1,4 +1,4 @@
-# Water / Flood Segmentation — Mask2Former Type Pool
+# Mask2Former Type Pool
 
 Binary water segmentation (`background`, `water`) on Mask2Former + detectron2.
 
