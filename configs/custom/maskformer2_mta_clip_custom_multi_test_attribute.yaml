@@ -1,0 +1,61 @@
+_BASE_: Base-Custom-SemanticSegmentation.yaml
+MODEL:
+  META_ARCHITECTURE: "MaskFormerMtaCLIP_attri"
+  SEM_SEG_HEAD:
+    NAME: "MaskFormerHead"
+    IGNORE_VALUE: 255
+    NUM_CLASSES: 2  # Update this to match your number of classes (background + water)
+    LOSS_WEIGHT: 1.0
+    CONVS_DIM: 256
+    MASK_DIM: 256
+    NORM: "GN"
+    USE_VISUAL: False  # Enable visual prototype alignment
+    USE_TEXT: False  # Enable text features
+    USE_YOLOE: False  # Enable YoLoE-style text alignment
+    # pixel decoder
+    PIXEL_DECODER_NAME: "MSDeformAttnPixelDecoder"
+    IN_FEATURES: ["res2", "res3", "res4", "res5"]
+    DEFORMABLE_TRANSFORMER_ENCODER_IN_FEATURES: ["res3", "res4", "res5"]
+    COMMON_STRIDE: 4
+    TRANSFORMER_ENC_LAYERS: 6
+    CLASS_NAMES: ["background", "water"]
+  MASK_FORMER:
+    TRANSFORMER_DECODER_NAME: "MaskTextDecoder_attri"
+    # TRANSFORMER_IN_FEATURE: "multi_scale_pixel_decoder"
+    TRANSFORMER_IN_FEATURE: "multi_scale_mta_clip_attri_decoder"
+    DEEP_SUPERVISION: True
+    NO_OBJECT_WEIGHT: 0.1
+    CLASS_WEIGHT: 2.0
+    MASK_WEIGHT: 5.0
+    DICE_WEIGHT: 5.0
+    USE_ONE_TO_MANY: False
+    HIDDEN_DIM: 256
+    NUM_OBJECT_QUERIES: 100
+    NHEADS: 8
+    DROPOUT: 0.0
+    DIM_FEEDFORWARD: 2048
+    ENC_LAYERS: 0
+    PRE_NORM: False
+    ENFORCE_INPUT_PROJ: False
+    SIZE_DIVISIBILITY: 32
+    DEC_LAYERS: 10  # 9 decoder layers, add one for the loss on learnable query
+    TRAIN_NUM_POINTS: 12544
+    OVERSAMPLE_RATIO: 3.0
+    IMPORTANCE_SAMPLE_RATIO: 0.75
+    ALIGN_LOSS_WEIGHT: 1.0  # Weight for text alignment loss
+    CLIP_MODEL_NAME: "ViT-B/16"
+    NUM_PROMPTS_PER_CLASS: 10
+    # NUM_PROMPTS_WATER: 3
+    # NUM_PROMPTS_BG: 3
+    CLIP_TEXT_DIM: 512
+    TEST:
+      SEMANTIC_ON: True
+      INSTANCE_ON: False
+      PANOPTIC_ON: False
+      OVERLAP_THRESHOLD: 0.8
+      OBJECT_MASK_THRESHOLD: 0.8
+DATASETS:
+  TRAIN: ("custom_sem_seg_train",)
+  TEST: ("custom_sem_seg_normal_flood", "custom_sem_seg_challenging_flood", "custom_sem_seg_challenging_water")
+  # TEST: ("custom_sem_seg_normal", "custom_sem_seg_all_flood", "custom_sem_seg_normal_flood", "custom_sem_seg_challenging_flood", "custom_sem_seg_challenging_water")
+

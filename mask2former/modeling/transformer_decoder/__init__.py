@@ -1,0 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
+from .maskformer_transformer_decoder import StandardTransformerDecoder
+from .maskformer_transformer_decoder_mta_clip_attribute import StandardTransformerDecoder_attri
+from .mask2former_transformer_decoder import MultiScaleMaskedTransformerDecoder
+from .mta_clip_modules_attribute import MaskTextDecoder_attri
